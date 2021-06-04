@@ -1,16 +1,10 @@
-# Substrate Pallet Template
+# DOTMog Pallet
 
-This is a template for a Substrate pallet which lives as its own crate so it can be imported into multiple runtimes. It is based on the ["template" pallet](https://github.com/paritytech/substrate/tree/master/bin/node-template/pallets/template) that is included with the [Substrate node template](https://github.com/paritytech/substrate/tree/master/bin/node-template).
-
-Check out the [HOWTO](HOWTO.md) to learn how to use this for your own runtime module.
-
-This README should act as a general template for distributing your pallet to others.
+This is the DOTMog pallet which lives as its own crate so it can be imported into multiple runtimes.
 
 ## Purpose
 
-This pallet acts as a template for building other pallets.
-
-It currently allows a user to put a `u32` value into storage, which triggers a runtime event.
+This pallet acts as the main pallet for the game DOTMog.
 
 ## Dependencies
 
@@ -29,9 +23,8 @@ This pallet does not depend on any other FRAME pallet or externally developed mo
 To add this pallet to your runtime, simply include the following to your runtime's `Cargo.toml` file:
 
 ```TOML
-[dependencies.pallet-template]
-default_features = false
-git = 'https://github.com/substrate-developer-hub/substrate-pallet-template.git'
+# external pallets
+pallet-dotmog = {default-features = false, version = '0.1.0', git = 'https://github.com/dotmog/pallet-dotmog.git'}
 ```
 
 and update your runtime's `std` feature to include this pallet:
@@ -39,7 +32,7 @@ and update your runtime's `std` feature to include this pallet:
 ```TOML
 std = [
     # --snip--
-    'pallet-template/std',
+    'pallet-dotmog/std',
 ]
 ```
 
@@ -48,8 +41,9 @@ std = [
 You should implement it's trait like so:
 
 ```rust
+TODO
 /// Used for test_module
-impl pallet_template::Config for Runtime {
+impl pallet_dotmog::Config for Runtime {
 	type Event = Event;
 }
 ```
@@ -57,12 +51,16 @@ impl pallet_template::Config for Runtime {
 and include it in your `construct_runtime!` macro:
 
 ```rust
-TemplatePallet: pallet_template::{Module, Call, Storage, Event<T>},
+DotMogModule: pallet_dotmog::{Pallet, Call, Storage, Event<T>},
 ```
 
 ### Genesis Configuration
 
-This template pallet does not have any genesis configuration.
+This dotmog pallet does have a genesis configuration.
+
+```rust
+TODO
+```
 
 ## Reference Docs
 
