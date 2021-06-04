@@ -206,19 +206,30 @@ pub mod pallet {
 	pub type GameEvents<T: Config> = StorageMap<_, Blake2_128Concat, T::Hash, GameEvent<T::Hash, T::BlockNumber, GameEventType>, ValueQuery>;
 
 
-//		/// A map of all existing game events accessible by the index. 
-//		AllGameEventsArray get(fn game_event_by_index): map hasher(blake2_128_concat) u64 => T::Hash;
-//		/// A count over all existing game events in the system.
-//		AllGameEventsCount get(fn all_game_events_count): u64;
-//		/// A map of the index of the game events accessible by the game event id (hash).
-//		AllGameEventsIndex: map hasher(identity) T::Hash => u64;
-//
-//		/// A map of all game event ids (hash) associated with an game event type (indexed).
-//		GameEventsArray get(fn game_event_of_type_by_index): map hasher(blake2_128_concat) (GameEventType, u64) => T::Hash;
-//		/// A count over all existing game events of one particular game event type.
-//		GameEventsCount get(fn game_event_of_type_count): map hasher(blake2_128_concat) GameEventType => u64;
-//		/// A map of the game event type index accessible by the game event id (hash).
-//		GameEventsIndex: map hasher(identity) T::Hash => u64;
+	/// A map of all existing game events accessible by the index.
+	#[pallet::storage]
+	#[pallet::getter(fn game_event_by_index)]
+	pub type AllGameEventsArray<T: Config> = StorageMap<_, Blake2_128Concat, u64, T::Hash, ValueQuery>;
+	/// A count over all existing game events in the system.
+	#[pallet::storage]
+	#[pallet::getter(fn all_game_events_count)]
+	pub type AllGameEventsCount<T: Config> = StorageMap<_, Identity, T::Hash, u64, ValueQuery>;
+	/// A map of the index of the game events accessible by the game event id (hash).
+	#[pallet::storage]
+	pub type AllGameEventsIndex<T: Config> = StorageMap<_, Identity, T::Hash, u64, ValueQuery>;
+
+	/// A map of all game event ids (hash) associated with an game event type (indexed).
+	#[pallet::storage]
+	#[pallet::getter(fn game_event_of_type_by_index)]
+	pub type GameEventsArray<T: Config> = StorageMap<_, Blake2_128Concat, (GameEventType, u64), T::Hash, ValueQuery>;
+	/// A count over all existing game events of one particular game event type.
+	#[pallet::storage]
+	#[pallet::getter(fn game_event_of_type_count)]
+	pub type GameEventsCount<T: Config> = StorageMap<_, Blake2_128Concat, GameEventType, u64, ValueQuery>;
+	/// A map of the game event type index accessible by the game event id (hash).
+	#[pallet::storage]
+	pub type GameEventsIndex<T: Config> = StorageMap<_, Identity, T::Hash, u64, ValueQuery>;
+
 //
 //		/// A vec of game event ids (hash) accessible by the triggering block number.
 //		GameEventsAtBlock get(fn game_events_at_block): map hasher(blake2_128_concat) T::BlockNumber => Vec<T::Hash>;	
