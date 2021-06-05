@@ -22,11 +22,12 @@ use crate as pallet_dotmog;
 
 use frame_support::{
 	parameter_types, ord_parameter_types,
-//	traits::{OnInitialize, OnFinalize},
+	traits::{OnInitialize, OnFinalize},
 };
 use frame_support_test::TestRandomness;
 use sp_core::H256;
 use sp_runtime::{
+	BuildStorage,
 	testing::Header,
 	traits::{BlakeTwo256, IdentityLookup},
 };
@@ -112,4 +113,35 @@ impl Config for Test {
 	type PricePayment = ();
 	//type Scheduler = Scheduler;
 	//type PalletsOrigin = OriginCaller;
+}
+
+// Build genesis storage according to the mock runtime.
+//pub fn new_test_ext() -> sp_io::TestExternalities {
+//	frame_system::GenesisConfig::default().build_storage::<Test>().unwrap().into()
+//}
+
+// This function basically just builds a genesis storage key/value store according to
+// our desired mockup.
+pub fn new_test_ext() -> sp_io::TestExternalities {
+	let t = GenesisConfig {
+	//	// We use default for brevity, but you can configure as desired if needed.
+		frame_system: Default::default(),
+		pallet_dotmog: Default::default(),
+	}.build_storage().unwrap();
+	t.into()
+	//frame_system::GenesisConfig::default().build_storage::<Test>().unwrap().into()
+}
+
+/// Run until a particular block.
+pub fn run_to_block(n: u64) {
+	while System::block_number() < n {
+		if System::block_number() > 1 {
+			System::on_finalize(System::block_number());
+			DotMogModule::on_finalize(System::block_number());
+		}
+		System::set_block_number(System::block_number() + 1);
+		System::on_initialize(System::block_number());
+
+		DotMogModule::on_initialize(System::block_number());
+	}
 }
