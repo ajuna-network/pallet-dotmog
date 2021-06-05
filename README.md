@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/17710198/120896543-590acd80-c622-11eb-8ab7-b83243c9b942.png)
+![image](https://user-images.githubusercontent.com/17710198/120896646-c3bc0900-c622-11eb-9a9e-9638c2fc4698.png)
 
 # DOTMog Pallet
 
