@@ -422,8 +422,8 @@ decl_module! {
 			ensure!(Self::ensure_not_max_mogwais(sender.clone()), Error::<T>::MaxMogwaisInAccount);
 
 			//let data_hash = T::Hashing::hash(random_bytes.as_bytes());
-			let block_number = <frame_system::Module<T>>::block_number();
-			//let block_hash = <frame_system::Module<T>>::block_hash(block_number);
+			let block_number = <frame_system::Pallet<T>>::block_number();
+			//let block_hash = <frame_system::Pallet<T>>::block_hash(block_number);
 			
 			let random_hash = Self::generate_random_hash(b"create_mogwai", sender.clone());
 
@@ -618,7 +618,7 @@ decl_module! {
 			let mut mogwai = Self::mogwai(mogwai_id);
 			ensure!(mogwai.gen == 0, Error::<T>::MogwaiIncompatibleGeneration);
 
-			let block_number = <frame_system::Module<T>>::block_number();
+			let block_number = <frame_system::Pallet<T>>::block_number();
 
 			let breed_type : BreedType = Self::calculate_breedtype(block_number);
 			  
@@ -668,7 +668,7 @@ decl_module! {
 
 			let (rarity, next_gen) = Generation::next_gen(parents[0].gen, parents[0].rarity, parents[1].gen, parents[1].rarity, mogwai_id.as_ref());
 
-			let block_number = <frame_system::Module<T>>::block_number();			
+			let block_number = <frame_system::Pallet<T>>::block_number();			
 			let breed_type : BreedType = Self::calculate_breedtype(block_number);
 			
 			let mut dx: [u8;16] = Default::default();
@@ -707,7 +707,7 @@ decl_module! {
 			//	}
 			//}
 
-			//let block_hash = <frame_system::Module<T>>::block_hash(block_number);
+			//let block_hash = <frame_system::Pallet<T>>::block_hash(block_number);
 
 			let mut mogwai_ids: Vec<T::Hash> = Vec::new();
 			mogwai_ids.push(mogwai_id);
@@ -747,8 +747,8 @@ decl_module! {
 			let owner = Self::owner_of(mogwai_id).ok_or("No owner for this mogwai")?;
             ensure!(owner == sender, "You can't set an auction for a mogwai you don't own");
 
-            ensure!(expiry > <frame_system::Module<T>>::block_number(), "The expiry has to be greater than the current block number");
-            ensure!(expiry <= <frame_system::Module<T>>::block_number() + Self::auction_period_limit(), "The expiry has be lower than the limit block number");
+            ensure!(expiry > <frame_system::Pallet<T>>::block_number(), "The expiry has to be greater than the current block number");
+            ensure!(expiry <= <frame_system::Pallet<T>>::block_number() + Self::auction_period_limit(), "The expiry has be lower than the limit block number");
 
             let auctions = Self::auctions_expire_at(expiry);
             ensure!(auctions.len() < MAX_AUCTIONS_PER_BLOCK, "Maximum number of auctions is reached for the target block, try another block");
@@ -783,7 +783,7 @@ decl_module! {
 
 			let mut auction = Self::auction_of(mogwai_id).ok_or("No auction for this mogwai")?;
 			
-            ensure!(<frame_system::Module<T>>::block_number() < auction.expiry, "This auction is expired.");
+            ensure!(<frame_system::Pallet<T>>::block_number() < auction.expiry, "This auction is expired.");
 
             ensure!(bid > auction.high_bid, "Your bid has to be greater than the highest bid.");
 
@@ -818,7 +818,7 @@ decl_module! {
 		/// On finalize
 		fn on_finalize() {
 
-			let block_number = <frame_system::Module<T>>::block_number();
+			let block_number = <frame_system::Pallet<T>>::block_number();
 
 			let auctions = Self::auctions_expire_at(block_number);
 			Self::finalize_auctions(auctions);
@@ -1134,7 +1134,7 @@ impl<T: Config> Module<T> {
 		}
 		
 		for auction in &auctions {
-			<Auctions<T>>::remove(<frame_system::Module<T>>::block_number());
+			<Auctions<T>>::remove(<frame_system::Pallet<T>>::block_number());
 			let bid_accounts = Self::bid_accounts(auction.mogwai_id);
 			for account in bid_accounts {
 
@@ -1221,7 +1221,7 @@ impl<T: Config> Module<T> {
 			}
 
 			let mogwai_struct = Self::mogwai(mogwai_id);
-			let block_hash = <frame_system::Module<T>>::block_hash(mogwai_struct.genesis);
+			let block_hash = <frame_system::Pallet<T>>::block_hash(mogwai_struct.genesis);
 
 			let mogwai_bio = Self::segment(mogwai_struct, block_hash, game_event.begin);
 
