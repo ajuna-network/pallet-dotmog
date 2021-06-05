@@ -41,17 +41,23 @@ std = [
 You should implement it's trait like so:
 
 ```rust
-TODO
-/// Used for test_module
+parameter_types! {
+	pub const DotMogPalletId: PalletId = PalletId(*b"py/dtmog");
+}
+
+/// Configure the pallet dotmog in pallets/dotmog.
 impl pallet_dotmog::Config for Runtime {
-	type Event = Event;
+		type PalletId = DotMogPalletId;
+		type Event = Event;
+		type Currency = Balances;
+		type Randomness = RandomnessCollectiveFlip;
+		type PricePayment = ();
 }
 ```
 
 and include it in your `construct_runtime!` macro:
-
 ```rust
-DotMogModule: pallet_dotmog::{Pallet, Call, Storage, Event<T>},
+DotMogModule: pallet_dotmog::{Pallet, Call, Storage, Event<T>, Config<T>},
 ```
 
 ### Genesis Configuration
@@ -59,7 +65,87 @@ DotMogModule: pallet_dotmog::{Pallet, Call, Storage, Event<T>},
 This dotmog pallet does have a genesis configuration.
 
 ```rust
-TODO
+use node_template_runtime::{
+	..., DotMogModuleConfig, ...
+};
+```
+
+```rust
+	GenesisConfig {
+		...
+		pallet_dotmog: DotMogModuleConfig {
+			key: root_key,
+		},
+	}
+```
+
+### Additional types
+
+```json
+{
+  "Address": "MultiAddress",
+  "AccountInfo": "AccountInfoWithDualRefCount",
+  "LookupSource": "MultiAddress",
+  "GameEventType": {
+    "_enum": [
+      "Default",
+      "Hatch"
+    ]
+  },
+  "GameEvent": {
+    "id": "H256",
+    "begin": "BlockNumber",
+    "duration": "u16",
+    "event_type": "GameEventType",
+    "hashes": "Vec<H256>",
+    "value": "u64"
+  },
+  "RarityType": {
+    "_enum": [
+      "Minor",
+      "Normal",
+      "Rare",
+      "Epic",
+      "Legendary"
+    ]
+  },
+  "MogwaiStruct": {
+    "id": "H256",
+    "dna": "H256",
+    "genesis": "BlockNumber",
+    "price": "Balance",
+    "gen": "u32",
+    "rarity": "RarityType"
+  },
+  "MogwaiBios": {
+    "mogwai_id": "Hash",
+    "state": "u32",
+    "metaxy": "Vec<[u8;16]>",
+    "intrinsic": "Balance",
+    "level": "u8",
+    "phases": "Vec<BlockNumber>",
+    "adaptations": "Vec<Hash>"
+  },
+  "MogwaicoinAddress": {
+    "address": "Vec<u8>",
+    "account": "AccountId",
+    "signature": "Vec<u8>",
+    "state": "ClaimState",
+    "balance": "Balance"
+  },
+  "ClaimState": {
+    "_enum": [
+      "None",
+      "Registred",
+      "Verified",
+      "Secured",
+      "Processed",
+      "Holded",
+      "Failed",
+      "Cancelled"
+    ]
+  }
+}
 ```
 
 ## Reference Docs
