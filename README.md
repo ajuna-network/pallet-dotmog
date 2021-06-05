@@ -1,3 +1,5 @@
+![image](https://user-images.githubusercontent.com/17710198/120896543-590acd80-c622-11eb-8ab7-b83243c9b942.png)
+
 # DOTMog Pallet
 
 This is the DOTMog pallet which lives as its own crate so it can be imported into multiple runtimes.
@@ -125,25 +127,6 @@ use node_template_runtime::{
     "level": "u8",
     "phases": "Vec<BlockNumber>",
     "adaptations": "Vec<Hash>"
-  },
-  "MogwaicoinAddress": {
-    "address": "Vec<u8>",
-    "account": "AccountId",
-    "signature": "Vec<u8>",
-    "state": "ClaimState",
-    "balance": "Balance"
-  },
-  "ClaimState": {
-    "_enum": [
-      "None",
-      "Registred",
-      "Verified",
-      "Secured",
-      "Processed",
-      "Holded",
-      "Failed",
-      "Cancelled"
-    ]
   }
 }
 ```
