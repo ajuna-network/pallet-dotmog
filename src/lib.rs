@@ -307,10 +307,6 @@ decl_module! {
 		// Errors must be initialized if they are used by the pallet.
 		type Error = Error<T>;
 
-		//const ModuleId: PalletId = T::PalletId::get();
-
-		//type BreedType = BreedType;
-
 		// Events must be initialized if they are used by the pallet.
 		fn deposit_event() = default;
 
