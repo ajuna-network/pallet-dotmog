@@ -40,9 +40,9 @@ frame_support::construct_runtime!(
 		NodeBlock = Block,
 		UncheckedExtrinsic = UncheckedExtrinsic,
 	{
-		System: frame_system::{Module, Call, Config, Storage, Event<T>},
-		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>},
-		DotMogModule: pallet_dotmog::{Module, Call, Storage, Event<T>, Config<T>},
+		System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
+		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
+		DotMogModule: pallet_dotmog::{Pallet, Call, Storage, Event<T>, Config<T>},
 	}
 );
 
@@ -57,7 +57,7 @@ parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 	pub const ExistentialDeposit: u64 = 1;
 
-	pub const DotMogModuleId: ModuleId = ModuleId(*b"py/dtmog");
+	pub const PalletId: PalletId = PalletId(*b"py/dtmog");
 	pub BlockWeights: frame_system::limits::BlockWeights =
 		frame_system::limits::BlockWeights::simple_max(1024);
 }
@@ -103,7 +103,7 @@ impl pallet_balances::Config for Test {
 }
 
 impl Config for Test {
-	type ModuleId = DotMogModuleId;
+	type PalletId = DotMogPalletId;
 	type Event = Event;
 	type Currency = pallet_balances::Module<Self>;
 	type Randomness = TestRandomness;

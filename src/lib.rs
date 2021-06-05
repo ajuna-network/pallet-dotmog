@@ -16,12 +16,12 @@
 mod benchmarking;
 
 use frame_support::{
-	decl_module, decl_error, decl_event, decl_storage, ensure, codec::{Encode, Decode}, dispatch, 
+	decl_module, decl_error, decl_event, decl_storage, ensure, codec::{Encode, Decode}, dispatch, PalletId,
 	traits::{
 		Get, Randomness, Currency, ReservableCurrency, ExistenceRequirement, WithdrawReasons, OnUnbalanced
 	}};
 use frame_system::{ensure_signed};
-use sp_runtime::{SaturatedConversion, ModuleId, traits::{Hash, TrailingZeroInput, Zero, AccountIdConversion}};
+use sp_runtime::{SaturatedConversion, traits::{Hash, TrailingZeroInput, Zero, AccountIdConversion}};
 use sp_std::vec::{Vec};
 use sp_std::prelude::*;
 
@@ -102,7 +102,7 @@ type NegativeImbalanceOf<T> = <<T as Config>::Currency as Currency<<T as frame_s
 pub trait Config: frame_system::Config {
 	
 	/// The dotmog's module id, is used for deriving its mogwai account ID's.
-	type ModuleId: Get<ModuleId>;
+	type PalletId: Get<PalletId>;
 
 	/// The overarching event type.
 	type Event: From<Event<Self>> + Into<<Self as frame_system::Config>::Event>;
@@ -111,7 +111,7 @@ pub trait Config: frame_system::Config {
 	type Currency: ReservableCurrency<Self::AccountId>;
 
 	/// Something that provides randomness in the runtime.
-	type Randomness: Randomness<Self::Hash>;
+	type Randomness: Randomness<Self::Hash, Self::BlockNumber>;
 
 	/// Handler for price payments.
 	type PricePayment: OnUnbalanced<NegativeImbalanceOf<Self>>;
@@ -307,7 +307,7 @@ decl_module! {
 		// Errors must be initialized if they are used by the pallet.
 		type Error = Error<T>;
 
-		const ModuleId: ModuleId = T::ModuleId::get();
+		//const ModuleId: PalletId = T::PalletId::get();
 
 		//type BreedType = BreedType;
 
@@ -839,7 +839,7 @@ impl<T: Config> Module<T> {
 	/// This actually does computation. If you need to keep using it, then make sure you cache the
 	/// value and only call this once.
 	pub fn account_id(mogwai_id: T::Hash) -> T::AccountId {
-		T::ModuleId::get().into_sub_account(mogwai_id)
+		T::PalletId::get().into_sub_account(mogwai_id)
 	}
 
 	/// Reads the nonce from storage, increments the stored nonce, and returns
@@ -1079,9 +1079,13 @@ impl<T: Config> Module<T> {
 
 	///
 	fn generate_random_hash(phrase: &[u8], sender: T::AccountId) -> T::Hash {
-		let seed = T::Randomness::random(phrase);
+        // we'll need a random seed here.
+		// TODO: deal with randomness freshness
+		// https://github.com/paritytech/substrate/issues/8312
+		let (seed, _) = T::Randomness::random(phrase);
 		let seed = <[u8; 32]>::decode(&mut TrailingZeroInput::new(seed.as_ref()))
-			 .expect("input is padded with zeroes; qed");
+			.expect("input is padded with zeroes; qed");
+		//let mut rng = ChaChaRng::from_seed(seed);	
 		return (seed, &sender, Self::encode_and_update_nonce()).using_encoded(T::Hashing::hash);
 	}
 
